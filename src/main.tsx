@@ -2,10 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import WelcomePage from "./pages";
-import LoginPage from "./pages/login";
-import NewContactPage from "./pages/contacts/new";
-import ContactsPage from "./pages/contacts";
+import WelcomePage from "./pages/WelcomePage";
+import LoginPage from "./pages/LoginPage";
+import NewContactsPage from "./pages/NewContactsPage";
+import ContactsPage from "./pages/ContactsPage";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/contacts/new",
-    element: <NewContactPage />,
+    element: <NewContactsPage />,
   },
   {
     path: "/contacts",
