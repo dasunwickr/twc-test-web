@@ -9,7 +9,7 @@ const Button: React.FC<ButtonProps> = ({ onClick, children }) => {
   return (
     <button
       onClick={onClick}
-      className="px-10 py-2 border-2 border-white bg-[#083F46] text-white rounded-full"
+      className="px-16 py-3 border-2 border-white bg-[#083F46] text-white rounded-full text-xl font-bold"
     >
       {children}
     </button>
