@@ -1,18 +1,20 @@
+import AuthLayout from "../layout/AuthLayout";
+
 const Login = () => {
   return (
-    <div
-      className="flex flex-row h-screen overflow-hidden"
-      style={{
-        backgroundImage: "url(src/assets/login/contact-us.png)",
-        backgroundPosition: "right",
-      }}
-    >
-      <div className="flex-1">
-        <img
-          src="src/assets/login/Ellipse_1.svg"
-          className="object-cover h-full"
-        />
-      </div>
+    <div>
+      <AuthLayout
+        children={
+          <div className="mx-32 flex-1 flex flex-col h-screen">
+            <div className="">
+              <h1 className="font-bold text-5xl text-white">Hi there,</h1>
+              <h2 className="font-semibold text-3xl text-white w-56">
+                Welcome to our contacts portal
+              </h2>
+            </div>
+          </div>
+        }
+      />
     </div>
   );
 };
