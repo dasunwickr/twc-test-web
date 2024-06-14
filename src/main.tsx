@@ -1,28 +1,34 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import WelcomePage from "./pages/WelcomePage";
-import LoginPage from "./pages/LoginPage";
-import NewContactsPage from "./pages/NewContactsPage";
-import ContactsPage from "./pages/ContactsPage";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
+} from "react-router-dom";
+import Login from "./pages/Login";
+import Welcome from "./pages/Welcome";
+import Contacts from "./pages/Contacts";
+import NewContacts from "./pages/NewContacts";
+
+const isAuthenticated = true;
 
 const router = createBrowserRouter([
   {
-    index: true,
-    element: <WelcomePage />,
+    path: "/",
+    element: isAuthenticated ? <Welcome /> : <Navigate to="/login" />,
   },
   {
     path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/contacts/new",
-    element: <NewContactsPage />,
+    element: <Login />,
   },
   {
     path: "/contacts",
-    element: <ContactsPage />,
+    element: isAuthenticated ? <Contacts /> : <Navigate to="/login" />,
+  },
+  {
+    path: "/contacts/new",
+    element: isAuthenticated ? <NewContacts /> : <Navigate to="/login" />,
   },
 ]);
 
