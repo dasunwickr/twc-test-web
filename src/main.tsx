@@ -6,7 +6,7 @@ import {
   createBrowserRouter,
   Navigate,
 } from "react-router-dom";
-import Login from "./pages/Login";
+import Login from "./pages/Auth/Login";
 import Welcome from "./pages/Welcome";
 import Contacts from "./pages/Contacts";
 import NewContacts from "./pages/NewContacts";

@@ -15,7 +15,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
     >
       <div className="relative flex-none" style={{ flex: 7 }}>
         <img
-          src="src/assets/login/Ellipse_1.svg"
+          src="src/assets/auth/Ellipse_1.svg"
           className="object-cover h-full w-full absolute top-0 left-0 z-10"
         />
 
