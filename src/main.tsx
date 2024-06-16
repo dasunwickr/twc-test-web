@@ -6,10 +6,14 @@ import {
   createBrowserRouter,
   Navigate,
 } from "react-router-dom";
-import Login from "./pages/Auth/Login";
-import Welcome from "./pages/Welcome";
+import Login from "./pages/user/Login";
 import Contacts from "./pages/Contacts";
 import NewContacts from "./pages/NewContacts";
+import Welcome from "./pages/Welcome";
+
+const isFirstTimeUser = () => {
+  return false;
+};
 
 const isAuthenticated = true;
 
@@ -28,7 +32,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/contacts/new",
-    element: isAuthenticated ? <NewContacts /> : <Navigate to="/login" />,
+    element: isAuthenticated ? (
+      <NewContacts firstTime={isFirstTimeUser()} />
+    ) : (
+      <Navigate to="/login" />
+    ),
   },
 ]);
 

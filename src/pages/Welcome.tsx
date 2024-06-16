@@ -1,27 +1,27 @@
-import Logout from "../components/Logout";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
+import HomeLayout from "../layout/HomeLayout";
 
 const Welcome = () => {
+  const navigate = useNavigate();
+
   return (
-    <div
-      className="h-screen"
-      style={{
-        backgroundImage: "url(src/assets/contact-us.png)",
-      }}
-    >
-      <div
-        className="h-full py-24 px-48"
-        style={{
-          backgroundImage: "url(src/assets/home/Ellipse_2.svg)",
-          WebkitBackgroundSize: "cover",
-        }}
-      >
-        <div>
-          <img src="src/assets/home/logo_contactsg.png" alt="" />
-          <div className="absolute bottom-0 right-0 mb-24 mr-48 text-white text-2xl">
-            <Logout />
-          </div>
+    <div className="">
+      <HomeLayout>
+        <div className="my-32 place-content-end">
+          <h1 className="text-6xl font-bold text-white">Welcome,</h1>
+          <p className="text-4xl font-normal text-white my-28">
+            This is where your contacts will live. Click the button below to add
+            a new contact.
+          </p>
+          <Button
+            children={"add your first contact"}
+            onClick={() => {
+              navigate("/contacts/new");
+            }}
+          />
         </div>
-      </div>
+      </HomeLayout>
     </div>
   );
 };

@@ -1,12 +1,11 @@
-import { Icon } from "@iconify/react";
 const Logout = () => {
   return (
     <div>
       <a href="" className="flex flex-row">
         <div className="mr-1 mt-1">
-          <Icon icon="mdi-light:logout" className="text-white" />
+          <img src="src/assets/home/logout.png" alt="" />
         </div>
-        <p className="flex-1 underline text-2xl text-white ml-2 mb-4">logout</p>
+        <p className="flex-1 underline text-3xl text-white ml-2 mb-2">logout</p>
       </a>
     </div>
   );

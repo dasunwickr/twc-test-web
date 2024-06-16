@@ -9,7 +9,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
     <div
       className="relative flex h-screen overflow-hidden"
       style={{
-        backgroundImage: "url(src/assets/login/contact-us.png)",
+        backgroundImage: "url(src/assets/contact-us.png)",
         backgroundPosition: "right",
       }}
     >
