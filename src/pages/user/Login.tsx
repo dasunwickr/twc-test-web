@@ -6,9 +6,7 @@ import TextField from "../../components/TextField";
 import Button from "../../components/Button";
 import Register from "./Register";
 
-interface LoginProps {
-  // Define any props if needed
-}
+interface LoginProps {}
 
 const Login: React.FC<LoginProps> = () => {
   const [showRegister, setShowRegister] = useState<boolean>(false);

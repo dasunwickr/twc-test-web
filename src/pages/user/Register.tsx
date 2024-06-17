@@ -13,7 +13,7 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
         <div>
           <h1 className="font-bold text-5xl text-white">Register Now!</h1>
         </div>
-        <div>
+        <div className="">
           <form className="flex flex-col">
             <TextField placeholder="e-mail" name="email" isPassword={false} />
             <TextField

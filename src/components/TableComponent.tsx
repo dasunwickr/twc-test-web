@@ -19,7 +19,7 @@ const TableComponent = () => {
   ];
 
   return (
-    <div className="bg-white rounded-3xl p-4 mx-64">
+    <div className="bg-white rounded-3xl p-4">
       <table className="w-full  table-auto">
         <thead>
           <tr className="text-left">
