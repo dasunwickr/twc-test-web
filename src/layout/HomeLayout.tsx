@@ -10,18 +10,18 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
     <div
       className="h-screen"
       style={{
-        backgroundImage: "url(src/assets/contact-us.png)",
+        backgroundImage: "url(/src/assets/contact-us.png)",
       }}
     >
       <div
         className="h-full py-24 px-60 "
         style={{
-          backgroundImage: "url(src/assets/home/Ellipse_2.svg)",
+          backgroundImage: "url(/src/assets/home/Ellipse_2.svg)",
           WebkitBackgroundSize: "cover",
         }}
       >
         <div id="x1" className="h-full">
-          <img src="src/assets/home/logo_contactsg.png" alt="" />
+          <img src="/src/assets/home/logo_contactsg.png" alt="" />
           <div className="">
             <div className="mt-8">{children}</div>
           </div>
