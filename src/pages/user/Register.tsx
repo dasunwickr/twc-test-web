@@ -3,7 +3,7 @@ import TextField from "../../components/TextField";
 import AuthLayout from "../../layout/AuthLayout";
 
 interface RegisterProps {
-  switchToLogin: () => void; // Define the type of switchToLogin prop
+  switchToLogin: () => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
