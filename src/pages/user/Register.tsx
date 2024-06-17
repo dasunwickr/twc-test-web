@@ -5,6 +5,8 @@ import AuthLayout from "../../layout/AuthLayout";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "react-query";
+import axiosInstance from "../../services/axiosInstance";
 
 interface RegisterProps {
   switchToLogin: () => void;
@@ -25,15 +27,37 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
     })
     .refine((data) => data.createPassword === data.confirmPassword, {
       path: ["confirmPassword"],
-      message: "Passwords does not match",
+      message: "Passwords do not match",
     });
 
-  const { register, handleSubmit } = useForm<RegisterFormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
 
-  const handleRegister = () => {
-    console.log("Register button clicked");
+  const mutation = useMutation(
+    async (data: RegisterFormData) => {
+      const response = await axiosInstance.post("/", {
+        email: data.email,
+        password: data.createPassword,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        console.log("Registration successful:", data);
+      },
+      onError: (error: any) => {
+        console.error("Registration failed:", error);
+      },
+    }
+  );
+
+  const handleRegister = (data: RegisterFormData) => {
+    mutation.mutate(data);
   };
 
   return (
@@ -43,29 +67,39 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
           <h1 className="font-bold text-5xl text-white">Register Now!</h1>
         </div>
         <div className="">
-          <form className="flex flex-col">
+          <form
+            className="flex flex-col"
+            onSubmit={handleSubmit(handleRegister)}
+          >
             <TextField
               placeholder="e-mail"
               isPassword={false}
               {...register("email")}
             />
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
+            )}
             <TextField
               placeholder="create password"
               isPassword={true}
               {...register("createPassword")}
             />
+            {errors.createPassword && (
+              <p className="text-red-500">{errors.createPassword.message}</p>
+            )}
             <TextField
               placeholder="confirm password"
               isPassword={true}
               {...register("confirmPassword")}
             />
+            {errors.confirmPassword && (
+              <p className="text-red-500">{errors.confirmPassword.message}</p>
+            )}
+            <Button>Register</Button>
           </form>
         </div>
-        <div className="flex flex-col ">
-          <Button onClick={handleSubmit(handleRegister)}>Register</Button>
-        </div>
         <p className="text-xl text-white place-content-end">
-          <a className="underline" onClick={switchToLogin}>
+          <a className="underline cursor-pointer" onClick={switchToLogin}>
             &lt; Back to Login
           </a>
         </p>

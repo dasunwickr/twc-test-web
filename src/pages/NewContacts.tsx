@@ -5,6 +5,8 @@ import HomeLayout from "../layout/HomeLayout";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "react-query";
+import axiosInstance from "../services/axiosInstance";
 
 interface NewContactsProps {
   firstTime: boolean;
@@ -35,8 +37,24 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
 
   const buttonText = firstTime ? "add your first contact" : "add contact";
 
+  const queryClient = useQueryClient();
+
+  const createUser = async (data: NewContactsFormData) => {
+    const response = await axiosInstance.post("/contact", data);
+    return response.data;
+  };
+
+  const mutation = useMutation(createUser, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("contacts");
+    },
+    onError: (error: any) => {
+      console.error("Error creating contact:", error);
+    },
+  });
+
   const onSubmit = (data: NewContactsFormData) => {
-    console.log(data);
+    mutation.mutate(data);
   };
 
   return (
