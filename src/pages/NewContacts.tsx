@@ -6,7 +6,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "react-query";
-import axiosInstance from "../services/axiosInstance";
+import axiosInstance from "../util/axiosInstance";
+import { getToken } from "../util/tokenSerivces";
 
 interface NewContactsProps {
   firstTime: boolean;
@@ -16,15 +17,17 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
   type NewContactsFormData = {
     name: string;
     email: string;
-    phone: string;
-    gender: string;
+    phone_number: string;
+    gender: "MALE" | "FEMALE";
   };
 
   const newContactsSchema = z.object({
-    name: z.string().nonempty("Name is required"),
+    name: z.string().min(1, "Name must be at least 1 character"),
     email: z.string().email("Invalid email format"),
-    phone: z.string().min(10, "Phone number must be at least 10 characters"),
-    gender: z.enum(["male", "female"]),
+    phone_number: z
+      .string()
+      .min(10, "Phone number must be at least 10 characters"),
+    gender: z.enum(["MALE", "FEMALE"]),
   });
 
   const {
@@ -35,33 +38,50 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
     resolver: zodResolver(newContactsSchema),
   });
 
-  const buttonText = firstTime ? "add your first contact" : "add contact";
+  const buttonText = firstTime ? "Add your first contact" : "Add contact";
 
   const queryClient = useQueryClient();
 
-  const createUser = async (data: NewContactsFormData) => {
-    const response = await axiosInstance.post("/contact", data);
-    return response.data;
-  };
-
-  const mutation = useMutation(createUser, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("contacts");
+  const createContactMutation = useMutation(
+    async (data: NewContactsFormData) => {
+      const token = getToken();
+      console.log("Data to send:", data);
+      try {
+        const response = await axiosInstance.post("/contact", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("Server response:", response.data);
+        return response.data;
+      } catch (error: any) {
+        console.error(
+          "Error creating contact:",
+          error.response?.data || error.message
+        );
+        throw new Error(error.response?.data || error.message);
+      }
     },
-    onError: (error: any) => {
-      console.error("Error creating contact:", error);
-    },
-  });
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("contacts");
+      },
+      onError: (error: any) => {
+        console.error("Error creating contact:", error.message);
+      },
+    }
+  );
 
   const onSubmit = (data: NewContactsFormData) => {
-    mutation.mutate(data);
+    console.log("Form submitted with data:", data);
+    createContactMutation.mutate(data);
   };
 
   return (
     <div className="">
       <HomeLayout>
         <div className="flex flex-col">
-          <h1 className="text-6xl font-normal italic text-white flex-1">
+          <h1 className="text-6xl font-normal italic text-white">
             New Contact
           </h1>
           <div className="flex-grow">
@@ -72,7 +92,7 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
               <TextField
                 isPassword={false}
                 {...register("name")}
-                placeholder="full name"
+                placeholder="Full Name"
               />
               {errors.name && (
                 <p className="text-red-500">{errors.name.message}</p>
@@ -80,7 +100,7 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
 
               <TextField
                 isPassword={false}
-                placeholder="e-mail"
+                placeholder="E-mail"
                 {...register("email")}
               />
               {errors.email && (
@@ -89,23 +109,22 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
 
               <TextField
                 isPassword={false}
-                placeholder="phone number"
-                {...register("phone")}
+                placeholder="Phone Number"
+                {...register("phone_number")}
               />
-              {errors.phone && (
-                <p className="text-red-500">{errors.phone.message}</p>
+              {errors.phone_number && (
+                <p className="text-red-500">{errors.phone_number.message}</p>
               )}
 
               <div className="flex flex-row items-center space-x-4 text-xl">
-                <p className="mr-4 text-white">gender</p>
+                <p className="mr-4 text-white">Gender</p>
                 <label
                   htmlFor="male"
                   className="flex items-center space-x-2 text-white"
                 >
                   <input
                     type="radio"
-                    id="male"
-                    value="male"
+                    value="MALE"
                     {...register("gender")}
                     className="bg-primary border-white"
                   />
@@ -117,10 +136,9 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
                 >
                   <input
                     type="radio"
-                    id="female"
-                    value="female"
+                    value="FEMALE"
                     {...register("gender")}
-                    className="border-white"
+                    className="bg-primary border-white"
                   />
                   <span>Female</span>
                 </label>
