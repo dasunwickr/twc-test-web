@@ -6,7 +6,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "react-query";
-import axiosInstance from "../../services/axiosInstance";
+import axiosInstance from "../../util/axiosInstance";
 
 interface RegisterProps {
   switchToLogin: () => void;

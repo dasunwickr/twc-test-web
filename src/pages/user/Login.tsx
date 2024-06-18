@@ -1,4 +1,3 @@
-// Login.tsx
 import React, { useState } from "react";
 import AuthLayout from "../../layout/AuthLayout";
 import TextField from "../../components/TextField";
@@ -7,11 +6,14 @@ import Register from "./Register";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import axiosInstance from "../../services/axiosInstance";
 import { useMutation } from "react-query";
+import axiosInstance from "../../util/axiosInstance";
+import { saveToken } from "../../util/tokenSerivces";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [showRegister, setShowRegister] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   type LoginFormData = {
     email: string;
@@ -46,6 +48,15 @@ const Login: React.FC = () => {
     {
       onSuccess: (data) => {
         console.log("Login successful", data);
+
+        const token = data.data.access_token;
+        if (token) {
+          saveToken(token);
+          console.log("Token saved to local storage");
+          navigate("/contacts");
+        } else {
+          console.error("No token found in response");
+        }
       },
       onError: (error) => {
         console.error("Login failed", error);

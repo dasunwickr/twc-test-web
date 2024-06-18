@@ -1,11 +1,16 @@
 import React, { ReactNode } from "react";
 import Logout from "../components/Logout";
+import { hasValidToken } from "../util/tokenSerivces";
+import { Navigate } from "react-router-dom";
 
 interface HomeLayoutProps {
   children: ReactNode;
 }
 
 const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
+  if (!hasValidToken()) {
+    return <Navigate to="/login" />;
+  }
   return (
     <div
       className="h-screen"

@@ -1,6 +1,15 @@
+import { useNavigate } from "react-router-dom";
+import { removeToken } from "../util/tokenSerivces";
+
 const Logout = () => {
+  const navigate = useNavigate();
+  const logout = () => {
+    removeToken();
+    navigate("/login");
+  };
+
   return (
-    <div>
+    <div onClick={logout}>
       <a href="" className="flex flex-row">
         <div className="mr-1 mt-1">
           <img src="/src/assets/home/logout.png" alt="" />

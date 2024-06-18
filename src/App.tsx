@@ -12,12 +12,10 @@ const isFirstTimeUser = () => {
   return false;
 };
 
-const isAuthenticated = true;
-
 const router = createBrowserRouter([
   {
     path: "/",
-    element: isAuthenticated ? <Welcome /> : <Navigate to="/login" />,
+    element: <Welcome />,
   },
   {
     path: "/login",
@@ -25,15 +23,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/contacts",
-    element: isAuthenticated ? <Contacts /> : <Navigate to="/login" />,
+    element: <Contacts />,
   },
   {
     path: "/contacts/new",
-    element: isAuthenticated ? (
-      <NewContacts firstTime={isFirstTimeUser()} />
-    ) : (
-      <Navigate to="/login" />
-    ),
+    element: <NewContacts firstTime={isFirstTimeUser()} />,
   },
 ]);
 
