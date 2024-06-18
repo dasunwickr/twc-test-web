@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "../components/Button";
 import TextField from "../components/TextField";
 import HomeLayout from "../layout/HomeLayout";
@@ -8,12 +8,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "react-query";
 import axiosInstance from "../util/axiosInstance";
 import { getToken } from "../util/tokenSerivces";
+import { useNavigate } from "react-router-dom";
 
 interface NewContactsProps {
   firstTime: boolean;
+  setIsFirstTime: (value: boolean) => void;
 }
 
-const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
+const NewContacts: React.FC<NewContactsProps> = ({
+  firstTime,
+  setIsFirstTime,
+}) => {
   type NewContactsFormData = {
     name: string;
     email: string;
@@ -34,13 +39,15 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
     register,
     handleSubmit,
     formState: { errors },
+    reset, // Reset form after submission
   } = useForm<NewContactsFormData>({
     resolver: zodResolver(newContactsSchema),
   });
 
-  const buttonText = firstTime ? "Add your first contact" : "Add contact";
+  const buttonText = firstTime ? "add your first contact" : "add contact";
 
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const createContactMutation = useMutation(
     async (data: NewContactsFormData) => {
@@ -65,6 +72,8 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("contacts");
+        navigate("/contacts");
+        setIsFirstTime(false);
       },
       onError: (error: any) => {
         console.error("Error creating contact:", error.message);
@@ -76,6 +85,12 @@ const NewContacts: React.FC<NewContactsProps> = ({ firstTime }) => {
     console.log("Form submitted with data:", data);
     createContactMutation.mutate(data);
   };
+
+  useEffect(() => {
+    if (createContactMutation.isSuccess) {
+      reset();
+    }
+  }, [createContactMutation.isSuccess, reset]);
 
   return (
     <div className="">

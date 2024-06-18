@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { useQuery, useMutation, QueryClient } from "react-query";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Icon } from "@iconify/react";
 import maleImage from "../assets/table/pic_m.png";
 import femaleImage from "../assets/table/pic_f.png";
 import axiosInstance from "../util/axiosInstance";
-import Button from "./Button";
 import { getToken } from "../util/tokenSerivces";
+import DeleteModal from "./modals/DeleteModal";
+import DeleteInfoModal from "./modals/DeleteInfoModal";
+import { useNavigate } from "react-router-dom";
 
 interface Contact {
   id: number;
@@ -23,6 +25,21 @@ const fetchContacts = async (): Promise<Contact[]> => {
   return data;
 };
 
+const patchContact = async (
+  updatedFields: Partial<Contact> & { id: number }
+) => {
+  const token = getToken();
+  if (!token) {
+    throw new Error("Token not found");
+  }
+
+  await axiosInstance.patch(`/contact/${updatedFields.id}`, updatedFields, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 const deleteContact = async (contactId: number) => {
   const token = getToken();
   if (!token) {
@@ -37,9 +54,13 @@ const deleteContact = async (contactId: number) => {
 };
 
 const TableComponent: React.FC = () => {
-  const queryClient = new QueryClient();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [editingContactId, setEditingContactId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
+  const [showDeleteInfoModal, setShowDeleteInfoModal] = useState(false);
+  const [editedContact, setEditedContact] = useState<Contact | null>(null);
   const perPage: number = 3;
 
   const {
@@ -51,28 +72,76 @@ const TableComponent: React.FC = () => {
   const deleteContactMutation = useMutation(deleteContact, {
     onSuccess: () => {
       queryClient.invalidateQueries("contact");
+      setContactToDelete(null);
+      setShowDeleteInfoModal(true);
     },
     onError: (error: Error) => {
       console.error("Error deleting contact:", error.message);
     },
   });
 
-  const handleDelete = (contactId: number) => {
-    if (window.confirm("Are you sure you want to delete this contact?")) {
-      deleteContactMutation.mutate(contactId);
+  const patchContactMutation = useMutation(patchContact, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("contact");
+      setEditingContactId(null);
+      setEditedContact(null);
+    },
+    onError: (error: Error) => {
+      console.error("Error patching contact:", error.message);
+    },
+  });
+
+  const handleDelete = (contact: Contact) => {
+    setContactToDelete(contact);
+  };
+
+  const handleConfirmDelete = () => {
+    if (contactToDelete) {
+      deleteContactMutation.mutate(contactToDelete.id);
     }
   };
 
-  const handleEdit = (contactId: number) => {
-    setEditingContactId(contactId);
+  const handleCancelDelete = () => {
+    setContactToDelete(null);
+  };
+
+  const handleEdit = (contact: Contact) => {
+    setEditingContactId(contact.id);
+    setEditedContact({ ...contact });
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (editedContact) {
+      setEditedContact({
+        ...editedContact,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleSave = () => {
-    setEditingContactId(null);
+    if (editedContact) {
+      const { id, ...updatedFields } = editedContact;
+      patchContactMutation.mutate({ id, ...updatedFields });
+    }
+  };
+
+  const toggleGender = () => {
+    if (editedContact) {
+      setEditedContact({
+        ...editedContact,
+        gender:
+          editedContact.gender.toUpperCase() === "MALE" ? "FEMALE" : "MALE",
+      });
+    }
   };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading contacts</div>;
+
+  if (!contacts || contacts.length === 0) {
+    navigate("/");
+  }
 
   const totalPages: number = Math.ceil((contacts!.length || 0) / perPage);
   const paginatedContacts: Contact[] = contacts!.slice(
@@ -116,21 +185,42 @@ const TableComponent: React.FC = () => {
               </td>
               <td className="p-2">
                 {editingContactId === row.id ? (
-                  <input type="text" value={row.name} />
+                  <input
+                    type="text"
+                    name="name"
+                    value={editedContact?.name || ""}
+                    onChange={handleChange}
+                  />
                 ) : (
                   row.name
                 )}
               </td>
-              <td className="p-2">
+              <td className="p-2 flex items-center">
                 {editingContactId === row.id ? (
-                  <input type="text" value={row.gender} />
+                  <>
+                    {editedContact?.gender}
+                    <Icon
+                      icon="mdi:autorenew"
+                      style={{
+                        fontSize: "24px",
+                        cursor: "pointer",
+                        marginLeft: "8px",
+                      }}
+                      onClick={toggleGender}
+                    />
+                  </>
                 ) : (
                   row.gender
                 )}
               </td>
               <td className="p-2">
                 {editingContactId === row.id ? (
-                  <input type="text" value={row.phone_number} />
+                  <input
+                    type="text"
+                    name="phone_number"
+                    value={editedContact?.phone_number || ""}
+                    onChange={handleChange}
+                  />
                 ) : (
                   row.phone_number
                 )}
@@ -148,12 +238,12 @@ const TableComponent: React.FC = () => {
                     <Icon
                       icon="mdi:delete-outline"
                       style={{ fontSize: "24px", cursor: "pointer" }}
-                      onClick={() => handleDelete(row.id)}
+                      onClick={() => handleDelete(row)}
                     />
                     <Icon
                       icon="mdi:pencil"
                       style={{ fontSize: "24px", cursor: "pointer" }}
-                      onClick={() => handleEdit(row.id)}
+                      onClick={() => handleEdit(row)}
                     />
                   </>
                 )}
@@ -189,6 +279,16 @@ const TableComponent: React.FC = () => {
           />
         </button>
       </div>
+      {contactToDelete && (
+        <DeleteModal
+          contactName={contactToDelete.name}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
+      {showDeleteInfoModal && (
+        <DeleteInfoModal onClose={() => setShowDeleteInfoModal(false)} />
+      )}
     </div>
   );
 };
