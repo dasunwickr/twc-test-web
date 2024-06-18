@@ -40,7 +40,7 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
 
   const mutation = useMutation(
     async (data: RegisterFormData) => {
-      const response = await axiosInstance.post("/", {
+      const response = await axiosInstance.post("/auth/signup", {
         email: data.email,
         password: data.createPassword,
       });
