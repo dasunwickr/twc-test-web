@@ -39,7 +39,7 @@ const NewContacts: React.FC<NewContactsProps> = ({
     register,
     handleSubmit,
     formState: { errors },
-    reset, // Reset form after submission
+    reset,
   } = useForm<NewContactsFormData>({
     resolver: zodResolver(newContactsSchema),
   });

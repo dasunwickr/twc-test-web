@@ -49,6 +49,7 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
     {
       onSuccess: (data) => {
         console.log("Registration successful:", data);
+        switchToLogin();
       },
       onError: (error: any) => {
         console.error("Registration failed:", error);
@@ -77,7 +78,7 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
               {...register("email")}
             />
             {errors.email && (
-              <p className="text-red-500">{errors.email.message}</p>
+              <p className="text-white">{errors.email.message}</p>
             )}
             <TextField
               placeholder="create password"
@@ -85,7 +86,7 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
               {...register("createPassword")}
             />
             {errors.createPassword && (
-              <p className="text-red-500">{errors.createPassword.message}</p>
+              <p className="text-white">{errors.createPassword.message}</p>
             )}
             <TextField
               placeholder="confirm password"
@@ -93,7 +94,7 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
-              <p className="text-red-500">{errors.confirmPassword.message}</p>
+              <p className="text-white">{errors.confirmPassword.message}</p>
             )}
             <Button>Register</Button>
           </form>
