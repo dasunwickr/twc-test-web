@@ -90,7 +90,7 @@ const Login: React.FC = () => {
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-red-500">{errors.email.message}</p>
+                  <p className="text-white">{errors.email.message}</p>
                 )}
 
                 <TextField
@@ -99,16 +99,14 @@ const Login: React.FC = () => {
                   {...register("password")}
                 />
                 {errors.password && (
-                  <p className="text-red-500">{errors.password.message}</p>
+                  <p className="text-white py-2">{errors.password.message}</p>
                 )}
 
                 <Button>
                   {loginMutation.isLoading ? "Logging in..." : "Login"}
                 </Button>
                 {loginMutation.isError && (
-                  <p className="text-red-500">
-                    Login failed. Please try again.
-                  </p>
+                  <p className="text-white">Login failed. Please try again.</p>
                 )}
               </form>
             </div>
