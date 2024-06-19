@@ -90,7 +90,7 @@ const Login: React.FC = () => {
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-white">{errors.email.message}</p>
+                  <p className="text-white py-1">{errors.email.message}</p>
                 )}
 
                 <TextField
@@ -99,7 +99,7 @@ const Login: React.FC = () => {
                   {...register("password")}
                 />
                 {errors.password && (
-                  <p className="text-white py-2">{errors.password.message}</p>
+                  <p className="text-white">{errors.password.message}</p>
                 )}
 
                 <Button>

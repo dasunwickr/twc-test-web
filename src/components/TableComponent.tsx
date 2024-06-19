@@ -1,61 +1,15 @@
 import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Icon } from "@iconify/react";
 import maleImage from "../assets/table/pic_m.png";
 import femaleImage from "../assets/table/pic_f.png";
-import axiosInstance from "../util/axiosInstance";
-import { getToken } from "../util/tokenSerivces";
+import { useNavigate } from "react-router-dom";
+import useContactStore, { Contact } from "../store/contact-store";
 import DeleteModal from "./modals/DeleteModal";
 import DeleteInfoModal from "./modals/DeleteInfoModal";
-import { useNavigate } from "react-router-dom";
-
-interface Contact {
-  id: number;
-  name: string;
-  gender: string;
-  phone_number: string;
-}
-
-const fetchContacts = async (): Promise<Contact[]> => {
-  const { data } = await axiosInstance.get<Contact[]>("/contact", {
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    },
-  });
-  return data;
-};
-
-const patchContact = async (
-  updatedFields: Partial<Contact> & { id: number }
-) => {
-  const token = getToken();
-  if (!token) {
-    throw new Error("Token not found");
-  }
-
-  await axiosInstance.patch(`/contact/${updatedFields.id}`, updatedFields, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
-
-const deleteContact = async (contactId: number) => {
-  const token = getToken();
-  if (!token) {
-    throw new Error("Token not found");
-  }
-
-  await axiosInstance.delete(`/contact/${contactId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
 
 const TableComponent: React.FC = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const { contacts, removeFromContacts, updateContact } = useContactStore();
   const [editingContactId, setEditingContactId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
@@ -63,46 +17,16 @@ const TableComponent: React.FC = () => {
   const [editedContact, setEditedContact] = useState<Contact | null>(null);
   const perPage: number = 3;
 
-  const {
-    data: contacts,
-    error,
-    isLoading,
-  } = useQuery<Contact[]>("contact", fetchContacts);
-
-  const deleteContactMutation = useMutation(deleteContact, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("contact");
-      setContactToDelete(null);
-      setShowDeleteInfoModal(true);
-    },
-    onError: (error: Error) => {
-      console.error("Error deleting contact:", error.message);
-    },
-  });
-
-  const patchContactMutation = useMutation(patchContact, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("contact");
-      setEditingContactId(null);
-      setEditedContact(null);
-    },
-    onError: (error: Error) => {
-      console.error("Error patching contact:", error.message);
-    },
-  });
-
   const handleDelete = (contact: Contact) => {
     setContactToDelete(contact);
   };
 
   const handleConfirmDelete = () => {
     if (contactToDelete) {
-      deleteContactMutation.mutate(contactToDelete.id);
+      removeFromContacts(contactToDelete.id);
+      setContactToDelete(null);
+      setShowDeleteInfoModal(true);
     }
-  };
-
-  const handleCancelDelete = () => {
-    setContactToDelete(null);
   };
 
   const handleEdit = (contact: Contact) => {
@@ -121,8 +45,9 @@ const TableComponent: React.FC = () => {
 
   const handleSave = () => {
     if (editedContact) {
-      const { id, ...updatedFields } = editedContact;
-      patchContactMutation.mutate({ id, ...updatedFields });
+      updateContact(editedContact);
+      setEditingContactId(null);
+      setEditedContact(null);
     }
   };
 
@@ -130,21 +55,17 @@ const TableComponent: React.FC = () => {
     if (editedContact) {
       setEditedContact({
         ...editedContact,
-        gender:
-          editedContact.gender.toUpperCase() === "MALE" ? "FEMALE" : "MALE",
+        gender: editedContact.gender === "MALE" ? "FEMALE" : "MALE",
       });
     }
   };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading contacts</div>;
 
   if (!contacts || contacts.length === 0) {
     navigate("/");
   }
 
-  const totalPages: number = Math.ceil((contacts!.length || 0) / perPage);
-  const paginatedContacts: Contact[] = contacts!.slice(
+  const totalPages: number = Math.ceil((contacts.length || 0) / perPage);
+  const paginatedContacts: Contact[] = contacts.slice(
     (currentPage - 1) * perPage,
     currentPage * perPage
   );
@@ -165,6 +86,7 @@ const TableComponent: React.FC = () => {
             <th className="w-1/4"></th>
             <th className="w-1/4">Full Name</th>
             <th className="w-1/6">Gender</th>
+            <th className="w-1/4">Email</th>
             <th className="w-1/3">Phone Number</th>
             <th className="w-1"></th>
           </tr>
@@ -174,12 +96,8 @@ const TableComponent: React.FC = () => {
             <tr key={row.id} className="hover:bg-gray-100">
               <td className="p-2">
                 <img
-                  src={
-                    row.gender.toUpperCase() === "MALE"
-                      ? maleImage
-                      : femaleImage
-                  }
-                  alt={row.gender.toUpperCase() === "MALE" ? "Male" : "Female"}
+                  src={row.gender === "MALE" ? maleImage : femaleImage}
+                  alt={row.gender === "MALE" ? "Male" : "Female"}
                   style={{ width: 24, height: 24 }}
                 />
               </td>
@@ -211,6 +129,18 @@ const TableComponent: React.FC = () => {
                   </>
                 ) : (
                   row.gender
+                )}
+              </td>
+              <td className="p-2">
+                {editingContactId === row.id ? (
+                  <input
+                    type="text"
+                    name="email"
+                    value={editedContact?.email || ""}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  row.email
                 )}
               </td>
               <td className="p-2">
@@ -283,7 +213,7 @@ const TableComponent: React.FC = () => {
         <DeleteModal
           contactName={contactToDelete.name}
           onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
+          onCancel={() => setContactToDelete(null)}
         />
       )}
       {showDeleteInfoModal && (

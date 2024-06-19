@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
-import Button from "../components/Button";
-import TextField from "../components/TextField";
-import HomeLayout from "../layout/HomeLayout";
-import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom";
+import HomeLayout from "../layout/HomeLayout";
+import Button from "../components/Button";
+import TextField from "../components/TextField";
 import axiosInstance from "../util/axiosInstance";
 import { getToken } from "../util/tokenSerivces";
-import { useNavigate } from "react-router-dom";
+import { NewContactsFormData } from "../types";
+import useContactStore from "../store/contact-store";
 
 interface NewContactsProps {
   firstTime: boolean;
@@ -19,12 +21,9 @@ const NewContacts: React.FC<NewContactsProps> = ({
   firstTime,
   setIsFirstTime,
 }) => {
-  type NewContactsFormData = {
-    name: string;
-    email: string;
-    phone_number: string;
-    gender: "MALE" | "FEMALE";
-  };
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { addToContacts } = useContactStore();
 
   const newContactsSchema = z.object({
     name: z.string().min(1, "Name must be at least 1 character"),
@@ -44,33 +43,19 @@ const NewContacts: React.FC<NewContactsProps> = ({
     resolver: zodResolver(newContactsSchema),
   });
 
-  const buttonText = firstTime ? "add your first contact" : "add contact";
-
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-
   const createContactMutation = useMutation(
     async (data: NewContactsFormData) => {
       const token = getToken();
-      console.log("Data to send:", data);
-      try {
-        const response = await axiosInstance.post("/contact", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log("Server response:", response.data);
-        return response.data;
-      } catch (error: any) {
-        console.error(
-          "Error creating contact:",
-          error.response?.data || error.message
-        );
-        throw new Error(error.response?.data || error.message);
-      }
+      const response = await axiosInstance.post("/contact", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
     },
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        addToContacts(data);
         queryClient.invalidateQueries("contacts");
         navigate("/contacts");
         setIsFirstTime(false);
@@ -82,7 +67,6 @@ const NewContacts: React.FC<NewContactsProps> = ({
   );
 
   const onSubmit = (data: NewContactsFormData) => {
-    console.log("Form submitted with data:", data);
     createContactMutation.mutate(data);
   };
 
@@ -110,7 +94,7 @@ const NewContacts: React.FC<NewContactsProps> = ({
                 placeholder="Full Name"
               />
               {errors.name && (
-                <p className="text-red-500">{errors.name.message}</p>
+                <p className="text-white">{errors.name.message}</p>
               )}
 
               <TextField
@@ -119,7 +103,7 @@ const NewContacts: React.FC<NewContactsProps> = ({
                 {...register("email")}
               />
               {errors.email && (
-                <p className="text-red-500">{errors.email.message}</p>
+                <p className="text-white">{errors.email.message}</p>
               )}
 
               <TextField
@@ -128,7 +112,7 @@ const NewContacts: React.FC<NewContactsProps> = ({
                 {...register("phone_number")}
               />
               {errors.phone_number && (
-                <p className="text-red-500">{errors.phone_number.message}</p>
+                <p className="text-white">{errors.phone_number.message}</p>
               )}
 
               <div className="flex flex-row items-center space-x-4 text-xl">
@@ -159,10 +143,12 @@ const NewContacts: React.FC<NewContactsProps> = ({
                 </label>
               </div>
               {errors.gender && (
-                <p className="text-red-500">{errors.gender.message}</p>
+                <p className="text-white">{errors.gender.message}</p>
               )}
 
-              <Button>{buttonText}</Button>
+              <Button>
+                {firstTime ? "add your first contact" : "add contact"}
+              </Button>
             </form>
           </div>
         </div>
