@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Login from "./pages/user/Login";
+import Login from "./pages/login/Login";
 import Contacts from "./pages/Contacts";
 import NewContacts from "./pages/NewContacts";
 import Welcome from "./pages/Welcome";

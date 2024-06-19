@@ -7,18 +7,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "react-query";
 import axiosInstance from "../../util/axiosInstance";
-
-interface RegisterProps {
-  switchToLogin: () => void;
-}
+import { RegisterFormData, RegisterProps } from "../../types";
 
 const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
-  type RegisterFormData = {
-    email: string;
-    createPassword: string;
-    confirmPassword: string;
-  };
-
   const registerSchema = z
     .object({
       email: z.string().email(),
@@ -38,7 +29,7 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
     resolver: zodResolver(registerSchema),
   });
 
-  const mutation = useMutation(
+  const registerMutate = useMutation(
     async (data: RegisterFormData) => {
       const response = await axiosInstance.post("/auth/signup", {
         email: data.email,
@@ -58,7 +49,7 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
   );
 
   const handleRegister = (data: RegisterFormData) => {
-    mutation.mutate(data);
+    registerMutate.mutate(data);
   };
 
   return (
