@@ -5,9 +5,20 @@ import TableComponent from "../components/TableComponent";
 import Button from "../components/Button";
 import { getToken } from "../util/tokenSerivces";
 import axiosInstance from "../util/axiosInstance";
+import useContactStore, { Contact } from "../store/contact-store";
 
-const Contacts = () => {
+const fetchContacts = async (): Promise<Contact[]> => {
+  const response = await axiosInstance.get<Contact[]>("/contact", {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
+  return response.data;
+};
+
+const Contacts: React.FC = () => {
   const navigate = useNavigate();
+  const { setContacts } = useContactStore();
 
   const { isLoading, isError } = useQuery("me", async () => {
     const response = await axiosInstance.get("/users/me", {
@@ -19,22 +30,29 @@ const Contacts = () => {
     return response.data.id;
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error fetching data</p>;
+  const { isLoading: isContactsLoading, isError: isContactsError } = useQuery(
+    "contacts",
+    fetchContacts,
+    {
+      onSuccess: (data) => {
+        setContacts(data);
+      },
+    }
+  );
+
+  if (isLoading || isContactsLoading) return <p>Loading...</p>;
+  if (isError || isContactsError) return <p>Error fetching data</p>;
 
   return (
     <HomeLayout>
-      <div className="flex flex-row ">
+      <div className="flex flex-row">
         <h1 className="text-6xl font-normal italic text-white flex-1 mb-12">
           Contacts
         </h1>
         <div>
-          <Button
-            children="add new contact"
-            onClick={() => {
-              navigate("/contacts/new");
-            }}
-          />
+          <Button onClick={() => navigate("/contacts/new")}>
+            Add New Contact
+          </Button>
         </div>
       </div>
       <TableComponent />

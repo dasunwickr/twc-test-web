@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "react-query";
 import axiosInstance from "../util/axiosInstance";
 import { getToken } from "../util/tokenSerivces";
 import { useNavigate } from "react-router-dom";
+import { NewContactsFormData } from "../types";
 
 interface NewContactsProps {
   firstTime: boolean;
@@ -19,13 +20,6 @@ const NewContacts: React.FC<NewContactsProps> = ({
   firstTime,
   setIsFirstTime,
 }) => {
-  type NewContactsFormData = {
-    name: string;
-    email: string;
-    phone_number: string;
-    gender: "MALE" | "FEMALE";
-  };
-
   const newContactsSchema = z.object({
     name: z.string().min(1, "Name must be at least 1 character"),
     email: z.string().email("Invalid email format"),
