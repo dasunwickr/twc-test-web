@@ -6,10 +6,10 @@ import Register from "./Register";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation } from "react-query";
 import axiosInstance from "../../util/axiosInstance";
 import { saveToken } from "../../util/tokenSerivces";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
 
 const Login: React.FC = () => {
   const [showRegister, setShowRegister] = useState<boolean>(false);
@@ -41,7 +41,7 @@ const Login: React.FC = () => {
     setShowRegister(false);
   };
 
-  const loginMutation = useMutation(
+  const loginMutate = useMutation(
     (loginData: LoginFormData) => {
       return axiosInstance.post("/auth/login", loginData);
     },
@@ -65,7 +65,7 @@ const Login: React.FC = () => {
   );
 
   const loginSubmit = (data: LoginFormData) => {
-    loginMutation.mutate(data);
+    loginMutate.mutate(data);
   };
 
   return (
@@ -103,9 +103,9 @@ const Login: React.FC = () => {
                 )}
 
                 <Button>
-                  {loginMutation.isLoading ? "Logging in..." : "Login"}
+                  {loginMutate.isLoading ? "Logging in..." : "Login"}
                 </Button>
-                {loginMutation.isError && (
+                {loginMutate.isError && (
                   <p className="text-white">Login failed. Please try again.</p>
                 )}
               </form>

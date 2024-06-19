@@ -9,13 +9,8 @@ import Button from "../components/Button";
 import TextField from "../components/TextField";
 import axiosInstance from "../util/axiosInstance";
 import { getToken } from "../util/tokenSerivces";
-import { NewContactsFormData } from "../types";
+import { NewContactsFormData, NewContactsProps } from "../types";
 import useContactStore from "../store/contact-store";
-
-interface NewContactsProps {
-  firstTime: boolean;
-  setIsFirstTime: (value: boolean) => void;
-}
 
 const NewContacts: React.FC<NewContactsProps> = ({
   firstTime,

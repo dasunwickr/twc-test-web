@@ -1,10 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import HomeLayout from "../layout/HomeLayout";
-
-interface WelcomeProps {
-  setIsFirstTime: (value: boolean) => void;
-}
+import { WelcomeProps } from "../types";
 
 const Welcome: React.FC<WelcomeProps> = ({ setIsFirstTime }) => {
   const navigate = useNavigate();
