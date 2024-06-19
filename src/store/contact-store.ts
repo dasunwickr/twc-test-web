@@ -1,12 +1,11 @@
 import { create } from "zustand";
 import { NewContactsFormData } from "../types";
 
-// Extend NewContactsFormData to include an id
 export type Contact = NewContactsFormData & { id: number };
 
 interface ContactStore {
   contacts: Contact[];
-  setContacts: (contacts: Contact[]) => void; // New method to set contacts
+  setContacts: (contacts: Contact[]) => void;
   addToContacts: (contact: Contact) => void;
   removeFromContacts: (id: number) => void;
   updateContact: (updatedContact: Partial<Contact> & { id: number }) => void;
@@ -15,7 +14,7 @@ interface ContactStore {
 const useContactStore = create<ContactStore>((set) => ({
   contacts: [],
 
-  setContacts: (contacts) => set({ contacts }), // Implementation of setContacts
+  setContacts: (contacts) => set({ contacts }),
 
   addToContacts: (contact) =>
     set((state) => ({ contacts: [...state.contacts, contact] })),

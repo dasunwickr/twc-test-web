@@ -29,10 +29,6 @@ const TableComponent: React.FC = () => {
     }
   };
 
-  const handleCancelDelete = () => {
-    setContactToDelete(null);
-  };
-
   const handleEdit = (contact: Contact) => {
     setEditingContactId(contact.id);
     setEditedContact({ ...contact });
@@ -90,6 +86,7 @@ const TableComponent: React.FC = () => {
             <th className="w-1/4"></th>
             <th className="w-1/4">Full Name</th>
             <th className="w-1/6">Gender</th>
+            <th className="w-1/4">Email</th>
             <th className="w-1/3">Phone Number</th>
             <th className="w-1"></th>
           </tr>
@@ -132,6 +129,18 @@ const TableComponent: React.FC = () => {
                   </>
                 ) : (
                   row.gender
+                )}
+              </td>
+              <td className="p-2">
+                {editingContactId === row.id ? (
+                  <input
+                    type="text"
+                    name="email"
+                    value={editedContact?.email || ""}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  row.email
                 )}
               </td>
               <td className="p-2">
@@ -204,7 +213,7 @@ const TableComponent: React.FC = () => {
         <DeleteModal
           contactName={contactToDelete.name}
           onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
+          onCancel={() => setContactToDelete(null)}
         />
       )}
       {showDeleteInfoModal && (
