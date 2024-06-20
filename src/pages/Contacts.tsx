@@ -5,7 +5,8 @@ import TableComponent from "../components/TableComponent";
 import Button from "../components/Button";
 import { getToken } from "../util/tokenSerivces";
 import axiosInstance from "../util/axiosInstance";
-import useContactStore, { Contact } from "../store/contact-store";
+import useContactStore from "../store/contact-store";
+import { Contact } from "../types";
 
 const fetchContacts = async (): Promise<Contact[]> => {
   const response = await axiosInstance.get<Contact[]>("/contact", {

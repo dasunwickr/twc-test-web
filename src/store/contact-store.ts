@@ -1,14 +1,13 @@
-import { create } from "zustand";
-import { NewContactsFormData } from "../types";
 
-export type Contact = NewContactsFormData & { id: number };
+import {create} from 'zustand';
+import { Contact } from '../types';
 
-interface ContactStore {
+export interface ContactStore {
   contacts: Contact[];
   setContacts: (contacts: Contact[]) => void;
   addToContacts: (contact: Contact) => void;
   removeFromContacts: (id: number) => void;
-  updateContact: (updatedContact: Partial<Contact> & { id: number }) => void;
+  updateContact: (updatedContact: Contact) => void;
 }
 
 const useContactStore = create<ContactStore>((set) => ({
@@ -27,9 +26,7 @@ const useContactStore = create<ContactStore>((set) => ({
   updateContact: (updatedContact) =>
     set((state) => ({
       contacts: state.contacts.map((contact) =>
-        contact.id === updatedContact.id
-          ? { ...contact, ...updatedContact }
-          : contact
+        contact.id === updatedContact.id ? { ...contact, ...updatedContact } : contact
       ),
     })),
 }));

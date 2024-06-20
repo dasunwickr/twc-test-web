@@ -2,20 +2,80 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import maleImage from "../assets/table/pic_m.png";
 import femaleImage from "../assets/table/pic_f.png";
-import { useNavigate } from "react-router-dom";
-import useContactStore, { Contact } from "../store/contact-store";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "react-query";
+import useContactStore from "../store/contact-store";
 import DeleteModal from "./modals/DeleteModal";
 import DeleteInfoModal from "./modals/DeleteInfoModal";
+import axiosInstance from "../util/axiosInstance";
+import { getToken } from "../util/tokenSerivces";
+import { Contact } from "../types";
+
+const deleteContact = async (contactId: number) => {
+  const response = await axiosInstance.delete(`/contact/${contactId}`);
+  return response.data;
+};
+
+const updateContact = async (updatedContact: Contact) => {
+  const response = await axiosInstance.patch(`/contact/${updatedContact.id}`, updatedContact);
+  return response.data;
+};
 
 const TableComponent: React.FC = () => {
-  const navigate = useNavigate();
-  const { contacts, removeFromContacts, updateContact } = useContactStore();
+  const { contacts, setContacts, removeFromContacts, updateContact: updateContactInStore } = useContactStore();
+  const queryClient = useQueryClient();
+
+  const perPage: number = 3;
+
   const [editingContactId, setEditingContactId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
   const [showDeleteInfoModal, setShowDeleteInfoModal] = useState(false);
   const [editedContact, setEditedContact] = useState<Contact | null>(null);
-  const perPage: number = 3;
+
+  
+  const removeContactMutation = useMutation(deleteContact, {
+    onSuccess: (removedContact) => {
+      queryClient.invalidateQueries('contacts');
+      setShowDeleteInfoModal(true);
+      removeFromContacts(removedContact); 
+    },
+  });
+
+  
+  const updateContactMutation = useMutation(updateContact, {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries('contacts');
+      setEditingContactId(null);
+      setEditedContact(null);
+      updateContactInStore(data); 
+    },
+  });
+
+  const { isLoading, isError } = useQuery("contacts", async () => {
+    const response = await axiosInstance.get<Contact[]>("/contact", {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+    return response.data;
+  }, {
+    onSuccess: (data) => {
+      setContacts(data); 
+    },
+  });
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error fetching data</p>;
+
+  const totalPages: number = Math.ceil((contacts.length || 0) / perPage);
+  const paginatedContacts: Contact[] = contacts.slice(
+    (currentPage - 1) * perPage,
+    currentPage * perPage
+  );
 
   const handleDelete = (contact: Contact) => {
     setContactToDelete(contact);
@@ -23,9 +83,8 @@ const TableComponent: React.FC = () => {
 
   const handleConfirmDelete = () => {
     if (contactToDelete) {
-      removeFromContacts(contactToDelete.id);
+      removeContactMutation.mutate(contactToDelete.id);
       setContactToDelete(null);
-      setShowDeleteInfoModal(true);
     }
   };
 
@@ -45,9 +104,7 @@ const TableComponent: React.FC = () => {
 
   const handleSave = () => {
     if (editedContact) {
-      updateContact(editedContact);
-      setEditingContactId(null);
-      setEditedContact(null);
+      updateContactMutation.mutate(editedContact);
     }
   };
 
@@ -59,16 +116,6 @@ const TableComponent: React.FC = () => {
       });
     }
   };
-
-  if (!contacts || contacts.length === 0) {
-    navigate("/");
-  }
-
-  const totalPages: number = Math.ceil((contacts.length || 0) / perPage);
-  const paginatedContacts: Contact[] = contacts.slice(
-    (currentPage - 1) * perPage,
-    currentPage * perPage
-  );
 
   const nextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
@@ -165,15 +212,16 @@ const TableComponent: React.FC = () => {
                   </button>
                 ) : (
                   <>
-                    <Icon
-                      icon="mdi:delete-outline"
-                      style={{ fontSize: "24px", cursor: "pointer" }}
-                      onClick={() => handleDelete(row)}
-                    />
-                    <Icon
+                  
+                  <Icon
                       icon="mdi:pencil"
                       style={{ fontSize: "24px", cursor: "pointer" }}
                       onClick={() => handleEdit(row)}
+                    />
+                    <Icon
+                      icon="mdi:trash-can-outline"
+                      style={{ fontSize: "24px", cursor: "pointer" }}
+                      onClick={() => handleDelete(row)}
                     />
                   </>
                 )}
@@ -186,27 +234,16 @@ const TableComponent: React.FC = () => {
         <button
           onClick={prevPage}
           disabled={currentPage === 1}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="px-4 py-2 bg-gray-200 rounded-md"
         >
-          <Icon
-            icon="mdi:chevron-left"
-            className="bg-primary"
-            style={{ marginRight: 8 }}
-          />
+          Previous
         </button>
-        <div>
-          Page {currentPage} of {totalPages}
-        </div>
         <button
           onClick={nextPage}
           disabled={currentPage === totalPages}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="px-4 py-2 bg-gray-200 rounded-md"
         >
-          <Icon
-            icon="mdi:chevron-right"
-            className="bg-primary"
-            style={{ marginLeft: 8 }}
-          />
+          Next
         </button>
       </div>
       {contactToDelete && (
