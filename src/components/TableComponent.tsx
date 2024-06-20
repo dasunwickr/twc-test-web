@@ -11,7 +11,6 @@ import useContactStore from "../store/contact-store";
 import DeleteModal from "./modals/DeleteModal";
 import DeleteInfoModal from "./modals/DeleteInfoModal";
 import axiosInstance from "../util/axiosInstance";
-import { getToken } from "../util/tokenSerivces";
 import { Contact } from "../types";
 import { useNavigate } from "react-router-dom";
 
