@@ -1,10 +1,8 @@
-// DeleteInfoModal.tsx
 import React from "react";
 import Button from "../Button";
+import { DeleteInfoModalProps } from "../../types";
 
-interface DeleteInfoModalProps {
-  onClose: () => void;
-}
+
 
 const DeleteInfoModal: React.FC<DeleteInfoModalProps> = ({ onClose }) => {
   return (

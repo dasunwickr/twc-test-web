@@ -1,14 +1,8 @@
 
 import {create} from 'zustand';
-import { Contact } from '../types';
+import { ContactStore } from '../types';
 
-export interface ContactStore {
-  contacts: Contact[];
-  setContacts: (contacts: Contact[]) => void;
-  addToContacts: (contact: Contact) => void;
-  removeFromContacts: (id: number) => void;
-  updateContact: (updatedContact: Contact) => void;
-}
+
 
 const useContactStore = create<ContactStore>((set) => ({
   contacts: [],

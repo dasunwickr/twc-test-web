@@ -1,11 +1,6 @@
 import React from "react";
+import { ButtonProps } from "../types";
 
-type ButtonProps = {
-  onClick?: () => void;
-  children: React.ReactNode;
-  variant?: "colored" | "outlined";
-  color?: string;
-};
 
 const Button: React.FC<ButtonProps> = ({
   onClick,

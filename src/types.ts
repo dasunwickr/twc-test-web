@@ -1,3 +1,5 @@
+import { InputHTMLAttributes } from "react";
+
 export type NewContactsFormData = {
   name: string;
   email: string;
@@ -34,7 +36,46 @@ export type WelcomeProps = {
   setIsFirstTime: (value: boolean) => void;
 };
 
+//Button.tsx
 
+export type ButtonProps = {
+  onClick?: () => void;
+  children: React.ReactNode;
+  variant?: "colored" | "outlined";
+  color?: string;
+};
+
+
+//TextField.tsx
+
+export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  isPassword?: boolean;
+}
+
+//contact-store.ts
+
+export type ContactStore = {
+  contacts: Contact[];
+  setContacts: (contacts: Contact[]) => void;
+  addToContacts: (contact: Contact) => void;
+  removeFromContacts: (id: number) => void;
+  updateContact: (updatedContact: Contact) => void;
+}
+
+//DeleteInfoModal.tsx
+export type DeleteInfoModalProps=  {
+  onClose: () => void;
+}
+
+//DeleteModal.tsx
+export type DeleteModalProps = {
+  contactName: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+
+//Other
 
 export type  Contact = {
   id: number;
