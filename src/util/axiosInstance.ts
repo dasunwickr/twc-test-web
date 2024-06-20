@@ -1,15 +1,17 @@
 import axios from "axios";
-import { getToken } from "./tokenSerivces";
+
+const baseURL = import.meta.env.VITE_API_URL as string;
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL,
 });
-axiosInstance.interceptors.request.use((config) => {
-  const token = getToken();
+
+export const setApiAuthHeader = (token?: string) => {
   if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
+      axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
+  } else {
+      delete axiosInstance.defaults.headers.common.Authorization;
   }
-  return config;
-});
+}
 
 export default axiosInstance;

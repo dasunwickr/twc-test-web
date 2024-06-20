@@ -1,28 +1,20 @@
-import React, { useState } from "react";
-import Button from "../Button";
+import React from 'react';
+import Button from '../Button';
 
-const SaveModal: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface SaveModalProps {
+  onClose: () => void;
+}
 
-  const handleOpen = () => setIsOpen(true);
-  const handleClose = () => setIsOpen(false);
-
+const SaveModal: React.FC<SaveModalProps> = ({ onClose }) => {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <Button onClick={handleOpen} children={"Save Contact"} />
-
-      {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-lg">
-          <div className="bg-white py-8 px-6 rounded-3xl flex flex-col items-center shadow-lg relative max-w-xl w-full">
-            <h2 className="text-xl font-semibold mb-4">
-              Your contact has been saved successfully!
-            </h2>
-            <div className="flex justify-center mt-4">
-              <Button children={"Okay"} onClick={handleClose} />
-            </div>
-          </div>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h2 className="text-2xl font-bold mb-4">Contact Saved!</h2>
+        <p className="text-lg">Your contact has been saved successfully.</p>
+        <div className='mt-6'>
+          <Button onClick={onClose}>Okay</Button>
         </div>
-      )}
+      </div>
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import HomeLayout from "../layout/HomeLayout";
 import { WelcomeProps } from "../types";
 
 const Welcome: React.FC<WelcomeProps> = ({ setIsFirstTime }) => {
@@ -12,8 +11,6 @@ const Welcome: React.FC<WelcomeProps> = ({ setIsFirstTime }) => {
   };
 
   return (
-    <div className="">
-      <HomeLayout>
         <div className="my-32 place-content-end">
           <h1 className="text-6xl font-bold text-white">Welcome,</h1>
           <p className="text-4xl font-normal text-white my-28">
@@ -22,8 +19,6 @@ const Welcome: React.FC<WelcomeProps> = ({ setIsFirstTime }) => {
           </p>
           <Button onClick={handleButtonClick}>add your first contact</Button>
         </div>
-      </HomeLayout>
-    </div>
   );
 };
 

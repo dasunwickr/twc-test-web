@@ -1,13 +1,9 @@
-import React, { ReactNode } from "react";
 import Logout from "../components/Logout";
 import { hasValidToken } from "../util/tokenSerivces";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
-interface HomeLayoutProps {
-  children: ReactNode;
-}
 
-const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
+const HomeLayout = ( ) => {
   if (!hasValidToken()) {
     return <Navigate to="/login" />;
   }
@@ -28,7 +24,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
         <div id="x1" className="h-full">
           <img src="/src/assets/home/logo_contactsg.png" alt="" />
           <div className="">
-            <div className="mt-8">{children}</div>
+            <Outlet />
           </div>
           <div className="absolute bottom-0 right-0 mb-24 mr-48 text-white text-2xl">
             <Logout />

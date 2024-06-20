@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import AuthLayout from "../../layout/AuthLayout";
 import TextField from "../../components/TextField";
 import Button from "../../components/Button";
 import Register from "./Register";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import axiosInstance from "../../util/axiosInstance";
+import axiosInstance, { setApiAuthHeader } from "../../util/axiosInstance";
 import { saveToken } from "../../util/tokenSerivces";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
@@ -52,8 +51,8 @@ const Login: React.FC = () => {
         const token = data.data.accessToken;
         
         if (token) {
+          setApiAuthHeader(token)
           saveToken(token);
-          console.log("Token saved to local storage");
           navigate("/contacts");
         } else {
           console.error("No token found in response");
@@ -70,9 +69,8 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="z-20">
       {!showRegister ? (
-        <AuthLayout>
           <div className="mx-32 flex-1 flex flex-col h-screen py-32 place-content-evenly">
             <div>
               <h1 className="font-bold text-5xl text-white">Hi there,</h1>
@@ -120,7 +118,6 @@ const Login: React.FC = () => {
               </p>
             </div>
           </div>
-        </AuthLayout>
       ) : (
         <Register switchToLogin={switchToLogin} />
       )}
