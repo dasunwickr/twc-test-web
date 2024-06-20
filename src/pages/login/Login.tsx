@@ -49,7 +49,8 @@ const Login: React.FC = () => {
       onSuccess: (data) => {
         console.log("Login successful", data);
 
-        const token = data.data.access_token;
+        const token = data.data.accessToken;
+        
         if (token) {
           saveToken(token);
           console.log("Token saved to local storage");

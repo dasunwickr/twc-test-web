@@ -3,8 +3,8 @@ import { InputHTMLAttributes } from "react";
 export type NewContactsFormData = {
   name: string;
   email: string;
-  phone_number: string;
-  gender: "MALE" | "FEMALE";
+  phoneNumber: string;
+  gender: "Male" | "Female";
 };
 
 // Login.tsx
@@ -80,7 +80,7 @@ export type DeleteModalProps = {
 export type  Contact = {
   id: number;
   name: string;
-  gender: 'MALE' | 'FEMALE';
+  gender: 'Male' | 'Female';
   email: string;
-  phone_number: string;
+  phoneNumber: string;
 }

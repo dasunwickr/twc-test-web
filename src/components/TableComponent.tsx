@@ -101,7 +101,7 @@ const TableComponent: React.FC = () => {
     if (editedContact) {
       setEditedContact({
         ...editedContact,
-        gender: editedContact.gender === "MALE" ? "FEMALE" : "MALE",
+        gender: editedContact.gender === "Male" ? "Female" : "Male",
       });
     }
   };
@@ -126,8 +126,8 @@ const TableComponent: React.FC = () => {
                 <tr key={row.id} className="hover:bg-gray-100">
                   <td className="p-2">
                     <img
-                      src={row.gender === "MALE" ? maleImage : femaleImage}
-                      alt={row.gender === "MALE" ? "Male" : "Female"}
+                      src={row.gender === "Male" ? maleImage : femaleImage}
+                      alt={row.gender === "Male" ? "Male" : "Female"}
                       style={{ width: 24, height: 24 }}
                     />
                   </td>
@@ -179,13 +179,13 @@ const TableComponent: React.FC = () => {
                     {editingContactId === row.id ? (
                       <input
                         type="text"
-                        name="phone_number"
-                        value={editedContact?.phone_number || ""}
+                        name="phoneNumber"
+                        value={editedContact?.phoneNumber || ""}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded"
                       />
                     ) : (
-                      row.phone_number
+                      row.phoneNumber
                     )}
                   </td>
                   <td className="p-2 flex items-center gap-2">

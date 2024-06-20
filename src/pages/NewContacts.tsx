@@ -23,10 +23,10 @@ const NewContacts: React.FC<NewContactsProps> = ({
   const newContactsSchema = z.object({
     name: z.string().min(1, "Name must be at least 1 character"),
     email: z.string().email("Invalid email format"),
-    phone_number: z
+    phoneNumber: z
       .string()
       .min(10, "Phone number must be at least 10 characters"),
-    gender: z.enum(["MALE", "FEMALE"]),
+    gender: z.enum(["Male", "Female"]),
   });
 
   const {
@@ -104,10 +104,10 @@ const NewContacts: React.FC<NewContactsProps> = ({
               <TextField
                 isPassword={false}
                 placeholder="Phone Number"
-                {...register("phone_number")}
+                {...register("phoneNumber")}
               />
-              {errors.phone_number && (
-                <p className="text-white">{errors.phone_number.message}</p>
+              {errors.phoneNumber && (
+                <p className="text-white">{errors.phoneNumber.message}</p>
               )}
 
               <div className="flex flex-row items-center space-x-4 text-xl">
@@ -118,7 +118,7 @@ const NewContacts: React.FC<NewContactsProps> = ({
                 >
                   <input
                     type="radio"
-                    value="MALE"
+                    value="Male"
                     {...register("gender")}
                     className="bg-primary border-white"
                   />
@@ -130,7 +130,7 @@ const NewContacts: React.FC<NewContactsProps> = ({
                 >
                   <input
                     type="radio"
-                    value="FEMALE"
+                    value="Female"
                     {...register("gender")}
                     className="bg-primary border-white"
                   />

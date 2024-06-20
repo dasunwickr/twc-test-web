@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login/Login";
 import Contacts from "./pages/Contacts";
 import NewContacts from "./pages/NewContacts";
@@ -12,31 +12,27 @@ const App = () => {
     setIsFirstTime(value);
   };
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Welcome setIsFirstTime={handleSetIsFirstTime} />,
-    },
-    {
-      path: "/login",
-      element: <Login />,
-    },
-    {
-      path: "/contacts",
-      element: <Contacts />,
-    },
-    {
-      path: "/contacts/new",
-      element: (
-        <NewContacts
-          firstTime={isFirstTime}
-          setIsFirstTime={handleSetIsFirstTime}
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={<Welcome setIsFirstTime={handleSetIsFirstTime} />}
         />
-      ),
-    },
-  ]);
-
-  return <RouterProvider router={router} />;
+        <Route path="/login" element={<Login />} />
+        <Route path="/contacts" element={<Contacts />} />
+        <Route
+          path="/contacts/new"
+          element={
+            <NewContacts
+              firstTime={isFirstTime}
+              setIsFirstTime={handleSetIsFirstTime}
+            />
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 export default App;
