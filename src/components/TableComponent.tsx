@@ -13,6 +13,7 @@ import DeleteInfoModal from "./modals/DeleteInfoModal";
 import axiosInstance from "../util/axiosInstance";
 import { getToken } from "../util/tokenSerivces";
 import { Contact } from "../types";
+import { useNavigate } from "react-router-dom";
 
 const deleteContact = async (contactId: number) => {
   const response = await axiosInstance.delete(`/contact/${contactId}`);
@@ -27,6 +28,7 @@ const updateContact = async (updatedContact: Contact) => {
 const TableComponent: React.FC = () => {
   const { contacts, setContacts, removeFromContacts, updateContact: updateContactInStore } = useContactStore();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [editingContactId, setEditingContactId] = useState<number | null>(null);
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
@@ -51,15 +53,15 @@ const TableComponent: React.FC = () => {
   });
 
   const { isLoading, isError } = useQuery("contacts", async () => {
-    const response = await axiosInstance.get<Contact[]>("/contact", {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await axiosInstance.get<Contact[]>("/contact");
     return response.data;
   }, {
     onSuccess: (data) => {
-      setContacts(data);
+      if(data.length === 0) {
+        navigate("/")
+      } else {
+        setContacts(data);
+      }
     },
   });
 

@@ -48,7 +48,7 @@ const NewContacts: React.FC<NewContactsProps> = ({
         addToContacts(data);
         queryClient.invalidateQueries("contacts");
         setIsFirstTime(false);
-        setShowModal(true); // Show modal on success
+        setShowModal(true); 
       },
       onError: (error: any) => {
         console.error("Error creating contact:", error.message);
