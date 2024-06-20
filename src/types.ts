@@ -33,3 +33,13 @@ export type NewContactsProps = {
 export type WelcomeProps = {
   setIsFirstTime: (value: boolean) => void;
 };
+
+
+
+export type  Contact = {
+  id: number;
+  name: string;
+  gender: 'MALE' | 'FEMALE';
+  email: string;
+  phone_number: string;
+}
