@@ -28,30 +28,25 @@ const TableComponent: React.FC = () => {
   const { contacts, setContacts, removeFromContacts, updateContact: updateContactInStore } = useContactStore();
   const queryClient = useQueryClient();
 
-  const perPage: number = 3;
-
   const [editingContactId, setEditingContactId] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
   const [showDeleteInfoModal, setShowDeleteInfoModal] = useState(false);
   const [editedContact, setEditedContact] = useState<Contact | null>(null);
 
-  
   const removeContactMutation = useMutation(deleteContact, {
     onSuccess: (removedContact) => {
       queryClient.invalidateQueries('contacts');
       setShowDeleteInfoModal(true);
-      removeFromContacts(removedContact); 
+      removeFromContacts(removedContact);
     },
   });
 
-  
   const updateContactMutation = useMutation(updateContact, {
     onSuccess: (data) => {
       queryClient.invalidateQueries('contacts');
       setEditingContactId(null);
       setEditedContact(null);
-      updateContactInStore(data); 
+      updateContactInStore(data);
     },
   });
 
@@ -64,18 +59,12 @@ const TableComponent: React.FC = () => {
     return response.data;
   }, {
     onSuccess: (data) => {
-      setContacts(data); 
+      setContacts(data);
     },
   });
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error fetching data</p>;
-
-  const totalPages: number = Math.ceil((contacts.length || 0) / perPage);
-  const paginatedContacts: Contact[] = contacts.slice(
-    (currentPage - 1) * perPage,
-    currentPage * perPage
-  );
 
   const handleDelete = (contact: Contact) => {
     setContactToDelete(contact);
@@ -117,135 +106,118 @@ const TableComponent: React.FC = () => {
     }
   };
 
-  const nextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
-  const prevPage = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
-  };
-
   return (
     <div className="bg-white rounded-3xl p-4">
-      <table className="w-full table-auto">
-        <thead>
-          <tr className="text-left">
-            <th className="w-1/4"></th>
-            <th className="w-1/4">Full Name</th>
-            <th className="w-1/6">Gender</th>
-            <th className="w-1/4">Email</th>
-            <th className="w-1/3">Phone Number</th>
-            <th className="w-1"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedContacts.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-100">
-              <td className="p-2">
-                <img
-                  src={row.gender === "MALE" ? maleImage : femaleImage}
-                  alt={row.gender === "MALE" ? "Male" : "Female"}
-                  style={{ width: 24, height: 24 }}
-                />
-              </td>
-              <td className="p-2">
-                {editingContactId === row.id ? (
-                  <input
-                    type="text"
-                    name="name"
-                    value={editedContact?.name || ""}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  row.name
-                )}
-              </td>
-              <td className="p-2 flex items-center">
-                {editingContactId === row.id ? (
-                  <>
-                    {editedContact?.gender}
-                    <Icon
-                      icon="mdi:autorenew"
-                      style={{
-                        fontSize: "24px",
-                        cursor: "pointer",
-                        marginLeft: "8px",
-                      }}
-                      onClick={toggleGender}
+      <div className="relative max-h-96 overflow-hidden">
+        <div className="overflow-x-auto overflow-y-auto max-h-96 no-scrollbar">
+          <table className="w-full table-fixed">
+            <thead className="sticky top-0 bg-white z-10">
+              <tr className="text-left">
+                <th className="w-1/4"></th>
+                <th className="w-1/4">Full Name</th>
+                <th className="w-1/6">Gender</th>
+                <th className="w-1/4">Email</th>
+                <th className="w-1/3">Phone Number</th>
+                <th className="w-1/6"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {contacts.map((row) => (
+                <tr key={row.id} className="hover:bg-gray-100">
+                  <td className="p-2">
+                    <img
+                      src={row.gender === "MALE" ? maleImage : femaleImage}
+                      alt={row.gender === "MALE" ? "Male" : "Female"}
+                      style={{ width: 24, height: 24 }}
                     />
-                  </>
-                ) : (
-                  row.gender
-                )}
-              </td>
-              <td className="p-2">
-                {editingContactId === row.id ? (
-                  <input
-                    type="text"
-                    name="email"
-                    value={editedContact?.email || ""}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  row.email
-                )}
-              </td>
-              <td className="p-2">
-                {editingContactId === row.id ? (
-                  <input
-                    type="text"
-                    name="phone_number"
-                    value={editedContact?.phone_number || ""}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  row.phone_number
-                )}
-              </td>
-              <td className="p-2 flex gap-2">
-                {editingContactId === row.id ? (
-                  <button
-                    className="p-3 bg-primary rounded-full text-white min-w-20"
-                    onClick={handleSave}
-                  >
-                    Save
-                  </button>
-                ) : (
-                  <>
-                  
-                  <Icon
-                      icon="mdi:pencil"
-                      style={{ fontSize: "24px", cursor: "pointer" }}
-                      onClick={() => handleEdit(row)}
-                    />
-                    <Icon
-                      icon="mdi:trash-can-outline"
-                      style={{ fontSize: "24px", cursor: "pointer" }}
-                      onClick={() => handleDelete(row)}
-                    />
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={prevPage}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-200 rounded-md"
-        >
-          Previous
-        </button>
-        <button
-          onClick={nextPage}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-200 rounded-md"
-        >
-          Next
-        </button>
+                  </td>
+                  <td className="p-2">
+                    {editingContactId === row.id ? (
+                      <input
+                        type="text"
+                        name="name"
+                        value={editedContact?.name || ""}
+                        onChange={handleChange}
+                        className="w-full border border-gray-300 rounded"
+                      />
+                    ) : (
+                      row.name
+                    )}
+                  </td>
+                  <td className="p-2 flex items-center">
+                    {editingContactId === row.id ? (
+                      <>
+                        {editedContact?.gender}
+                        <Icon
+                          icon="mdi:autorenew"
+                          style={{
+                            fontSize: "24px",
+                            cursor: "pointer",
+                            marginLeft: "8px",
+                          }}
+                          onClick={toggleGender}
+                        />
+                      </>
+                    ) : (
+                      row.gender
+                    )}
+                  </td>
+                  <td className="p-2">
+                    {editingContactId === row.id ? (
+                      <input
+                        type="text"
+                        name="email"
+                        value={editedContact?.email || ""}
+                        onChange={handleChange}
+                        className="w-full border border-gray-300 rounded"
+                      />
+                    ) : (
+                      row.email
+                    )}
+                  </td>
+                  <td className="p-2">
+                    {editingContactId === row.id ? (
+                      <input
+                        type="text"
+                        name="phone_number"
+                        value={editedContact?.phone_number || ""}
+                        onChange={handleChange}
+                        className="w-full border border-gray-300 rounded"
+                      />
+                    ) : (
+                      row.phone_number
+                    )}
+                  </td>
+                  <td className="p-2 flex items-center gap-2">
+                    {editingContactId === row.id ? (
+                      <button
+                        className="p-3 bg-primary rounded-full text-white min-w-20"
+                        onClick={handleSave}
+                      >
+                        Save
+                      </button>
+                    ) : (
+                      <>
+                        <Icon
+                          icon="mdi:pencil"
+                          style={{ fontSize: "24px", cursor: "pointer" }}
+                          onClick={() => handleEdit(row)}
+                        />
+                        <Icon
+                          icon="mdi:trash-can-outline"
+                          style={{ fontSize: "24px", cursor: "pointer" }}
+                          onClick={() => handleDelete(row)}
+                        />
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
+      
       {contactToDelete && (
         <DeleteModal
           contactName={contactToDelete.name}
@@ -261,3 +233,4 @@ const TableComponent: React.FC = () => {
 };
 
 export default TableComponent;
+
