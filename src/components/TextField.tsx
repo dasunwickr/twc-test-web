@@ -1,8 +1,5 @@
-import { forwardRef, Ref, InputHTMLAttributes } from "react";
-
-interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-  isPassword?: boolean;
-}
+import { forwardRef, Ref } from "react";
+import { TextFieldProps } from "../types";
 
 const TextField = forwardRef(
   (
