@@ -217,7 +217,7 @@ const TableComponent: React.FC = () => {
           </table>
         </div>
       </div>
-      {/* Modals for delete confirmation and information */}
+      
       {contactToDelete && (
         <DeleteModal
           contactName={contactToDelete.name}
