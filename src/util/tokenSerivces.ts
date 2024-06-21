@@ -12,6 +12,15 @@ export const removeToken = () => {
   localStorage.removeItem("accessToken");
 };
 
+export const decodeToken = (token: string): any => {
+  try {
+    return jwtDecode(token);
+  } catch (error) {
+    console.error("Failed to decode token:", error);
+    return null;
+  }
+}
+
 export const hasValidToken = () => {
   const token = getToken();
   if (!token) {
