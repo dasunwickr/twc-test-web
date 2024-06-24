@@ -110,7 +110,7 @@ const TableComponent: React.FC = () => {
   return (
     <div className="bg-white rounded-3xl p-4">
       <div className="relative max-h-96 overflow-hidden">
-        <div className="overflow-x-auto overflow-y-auto max-h-96 no-scrollbar">
+        <div className="overflow-x-auto overflow-y-auto max-h-52 no-scrollbar">
           <table className="w-full table-fixed">
             <thead className="sticky top-0 bg-white z-10">
               <tr className="text-left">
@@ -129,7 +129,7 @@ const TableComponent: React.FC = () => {
                     <img
                       src={row.gender === "Male" ? maleImage : femaleImage}
                       alt={row.gender === "Male" ? "Male" : "Female"}
-                      style={{ width: 24, height: 24 }}
+                      className="w-10 h-10 rounded-full place-content-center"
                     />
                   </td>
                   <td className="p-2">
@@ -139,26 +139,29 @@ const TableComponent: React.FC = () => {
                         name="name"
                         value={editedContact?.name || ""}
                         onChange={handleChange}
-                        className="w-full border-r-2 border-gray-300  bg-transparent focus:border-green-500 focus:outline-none"
+                        className={`w-full  px-2 py-1 focus:outline-none ${editingContactId === row.id
+                          ? "border-r-4 border-primary bg-primary-opacity"
+                          : ""
+                          }`}
                       />
                     ) : (
                       row.name
                     )}
                   </td>
-                  <td className="p-2 flex items-center">
+                  <td >
                     {editingContactId === row.id ? (
-                      <>
-                        {editedContact?.gender}
-                        <Icon
-                          icon="mdi:autorenew"
-                          style={{
-                            fontSize: "24px",
-                            cursor: "pointer",
-                            marginLeft: "8px",
-                            color: "083F46",
-                          }}
-                          onClick={toggleGender}
-                        />
+                      < >
+                        <span className="bg-primary-opacity flex items-center py-1"> <span className="mr-2">{editedContact?.gender}</span>
+                          <Icon
+                            icon="mdi:autorenew"
+                            style={{
+                              fontSize: "24px",
+                              cursor: "pointer",
+                              color: "#083F46",
+                            }}
+                            onClick={toggleGender}
+                          /></span>
+
                       </>
                     ) : (
                       row.gender
@@ -171,7 +174,10 @@ const TableComponent: React.FC = () => {
                         name="email"
                         value={editedContact?.email || ""}
                         onChange={handleChange}
-                        className="w-full border-r-2 border-gray-300  bg-transparent focus:border-green-500 focus:outline-none"
+                        className={`w-full  px-2 py-1 focus:outline-none ${editingContactId === row.id
+                          ? "border-r-4 border-primary bg-primary-opacity"
+                          : ""
+                          }`}
                       />
                     ) : (
                       row.email
@@ -184,7 +190,10 @@ const TableComponent: React.FC = () => {
                         name="phoneNumber"
                         value={editedContact?.phoneNumber || ""}
                         onChange={handleChange}
-                        className="w-full border-r-2 border-gray-300  bg-transparent focus:border-green-500 focus:outline-none"
+                        className={`w-full px-2 py-1 focus:outline-none ${editingContactId === row.id
+                          ? "border-r-4 border-primary bg-primary-opacity"
+                          : ""
+                          }`}
                       />
                     ) : (
                       row.phoneNumber
@@ -193,7 +202,7 @@ const TableComponent: React.FC = () => {
                   <td className="p-2 flex items-center gap-2">
                     {editingContactId === row.id ? (
                       <button
-                        className="p-3 bg-primary rounded-full text-white min-w-20"
+                        className="px-4 py-1 bg-primary text-white rounded-full min-w-20"
                         onClick={handleSave}
                       >
                         Save
