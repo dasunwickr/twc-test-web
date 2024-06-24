@@ -14,11 +14,10 @@ const Button: React.FC<ButtonProps> = ({
     <button
       type="submit"
       onClick={onClick}
-      className={`px-14 py-2 border-2 rounded-full text-2xl font-normal ${
-        isOutlined
-          ? `border-${color} text-${color} bg-white`
-          : `border-white bg-[#083F46] text-white`
-      }`}
+      className={`px-14 py-1 border-2 rounded-full text-2xl font-normal ${isOutlined
+        ? `border-${color} text-${color} bg-white`
+        : `border-white bg-[#083F46] text-white`
+        }`}
       style={
         isOutlined
           ? { borderColor: color, color: color, backgroundColor: "white" }

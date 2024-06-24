@@ -49,9 +49,9 @@ const Login: React.FC = () => {
         console.log("Login successful", data);
 
         const token = data.data.accessToken;
-        
+
         if (token) {
-          setApiAuthHeader(token)
+          setApiAuthHeader(token);
           saveToken(token);
           navigate("/contacts");
         } else {
@@ -68,59 +68,53 @@ const Login: React.FC = () => {
     loginMutate.mutate(data);
   };
 
-
-
-
   return (
     <div className="z-20">
       {!showRegister ? (
-          <div className="mx-32 flex-1 flex flex-col h-screen py-32 place-content-evenly">
-            <div>
-              <h1 className="font-bold text-5xl text-white">Hi there,</h1>
-              <h2 className="font-semibold text-3xl text-white w-56">
-                Welcome to our contacts portal
-              </h2>
-            </div>
-            <div>
-              <form
-                className="flex flex-col"
-                onSubmit={handleSubmit(loginSubmit)}
-              >
-                <TextField
-                  placeholder="Email"
-                  isPassword={false}
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="text-white py-1">{errors.email.message}</p>
-                )}
-
-                <TextField
-                  placeholder="Password"
-                  isPassword={true}
-                  {...register("password")}
-                />
-                {errors.password && (
-                  <p className="text-white">{errors.password.message}</p>
-                )}
-
-                <Button>
-                  {loginMutate.isLoading ? "Logging in..." : "Login"}
-                </Button>
-                {loginMutate.isError && (
-                  <p className="text-white">Login failed. Please try again.</p>
-                )}
-              </form>
-            </div>
-            <div className="flex flex-row items-center">
-              <p className="ml-5 text-xl text-white flex flex-row">
-                <span className="mx-5">or</span>
-                <button className="underline" onClick={switchToRegister}>
-                  Click here to Register
-                </button>
-              </p>
-            </div>
+        <div className="mx-auto max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl flex-1 flex flex-col h-screen py-8 md:py-16 lg:py-24 xl:py-32 place-content-evenly">
+          <div>
+            <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl text-white">Hi there,</h1>
+            <h2 className="font-semibold text-lg md:text-xl lg:text-2xl text-white w-56">
+              Welcome to our contacts portal
+            </h2>
           </div>
+          <div>
+            <form className="flex flex-col" onSubmit={handleSubmit(loginSubmit)}>
+              <TextField
+                placeholder="Email"
+                isPassword={false}
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-white py-1">{errors.email.message}</p>
+              )}
+
+              <TextField
+                placeholder="Password"
+                isPassword={true}
+                {...register("password")}
+              />
+              {errors.password && (
+                <p className="text-white">{errors.password.message}</p>
+              )}
+
+              <Button>
+                {loginMutate.isLoading ? "Logging in..." : "Login"}
+              </Button>
+              {loginMutate.isError && (
+                <p className="text-white">Login failed. Please try again.</p>
+              )}
+            </form>
+          </div>
+          <div className="flex flex-row items-center">
+            <p className="ml-2 md:ml-3 text-sm md:text-base lg:text-lg text-white flex flex-row">
+              <span className="mx-1 md:mx-2">or</span>
+              <button className="underline" onClick={switchToRegister}>
+                Click here to Register
+              </button>
+            </p>
+          </div>
+        </div>
       ) : (
         <Register switchToLogin={switchToLogin} />
       )}

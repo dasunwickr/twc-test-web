@@ -1,4 +1,5 @@
 import { jwtDecode } from "jwt-decode";
+import { useUserStore } from "../store/userStore";
 
 export const saveToken = (token: string) => {
   localStorage.setItem("accessToken", token);
@@ -35,4 +36,15 @@ export const hasValidToken = () => {
     console.log(error);
     return false;
   }
+};
+
+
+export const decodeAndHandleToken = (token: string) => {
+  if (token) {
+    const decoded = jwtDecode(token);
+    const { setUser } = useUserStore.getState();  
+    setUser(decoded);
+    return decoded;
+  }
+  return null;
 };

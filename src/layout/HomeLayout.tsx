@@ -3,7 +3,7 @@ import { hasValidToken } from "../util/tokenSerivces";
 import { Navigate, Outlet } from "react-router-dom";
 
 
-const HomeLayout = ( ) => {
+const HomeLayout = () => {
   if (!hasValidToken()) {
     return <Navigate to="/login" />;
   }
@@ -23,7 +23,7 @@ const HomeLayout = ( ) => {
       >
         <div id="x1" className="h-full">
           <img src="/src/assets/home/logo_contactsg.png" alt="" />
-          <div className="">
+          <div className="mt-8">
             <Outlet />
           </div>
           <div className="absolute bottom-0 right-0 mb-24 mr-48 text-white text-2xl">

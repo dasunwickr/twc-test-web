@@ -8,7 +8,7 @@ import Button from "../components/Button";
 import TextField from "../components/TextField";
 import axiosInstance from "../util/axiosInstance";
 import { NewContactsFormData, NewContactsProps } from "../types";
-import useContactStore from "../store/contact-store";
+import useContactStore from "../store/contactStore";
 import SaveModal from "../components/modals/SaveModal";
 
 const NewContacts: React.FC<NewContactsProps> = ({
@@ -48,7 +48,7 @@ const NewContacts: React.FC<NewContactsProps> = ({
         addToContacts(data);
         queryClient.invalidateQueries("contacts");
         setIsFirstTime(false);
-        setShowModal(true); 
+        setShowModal(true);
       },
       onError: (error: any) => {
         console.error("Error creating contact:", error.message);
@@ -87,28 +87,16 @@ const NewContacts: React.FC<NewContactsProps> = ({
               {...register("name")}
               placeholder="Full Name"
             />
-            {errors.name && (
-              <p className="text-white">{errors.name.message}</p>
-            )}
-
             <TextField
               isPassword={false}
               placeholder="E-mail"
               {...register("email")}
             />
-            {errors.email && (
-              <p className="text-white">{errors.email.message}</p>
-            )}
-
             <TextField
               isPassword={false}
               placeholder="Phone Number"
               {...register("phoneNumber")}
             />
-            {errors.phoneNumber && (
-              <p className="text-white">{errors.phoneNumber.message}</p>
-            )}
-
             <div className="flex flex-row items-center space-x-4 text-xl">
               <p className="mr-4 text-white">Gender</p>
               <label
@@ -136,14 +124,15 @@ const NewContacts: React.FC<NewContactsProps> = ({
                 <span>Female</span>
               </label>
             </div>
-            {errors.gender && (
-              <p className="text-white">{errors.gender.message}</p>
-            )}
-
             <Button>
               {firstTime ? "add your first contact" : "add contact"}
             </Button>
           </form>
+          <div className="text-white">
+            {Object.values(errors).map((error, index) => (
+              <p key={index}>{error?.message}</p>
+            ))}
+          </div>
         </div>
       </div>
 

@@ -7,7 +7,7 @@ import {
   useMutation,
   useQueryClient,
 } from "react-query";
-import useContactStore from "../store/contact-store";
+import useContactStore from "../store/contactStore";
 import DeleteModal from "./modals/DeleteModal";
 import DeleteInfoModal from "./modals/DeleteInfoModal";
 import axiosInstance from "../util/axiosInstance";

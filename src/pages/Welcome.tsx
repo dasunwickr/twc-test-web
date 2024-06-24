@@ -11,14 +11,14 @@ const Welcome: React.FC<WelcomeProps> = ({ setIsFirstTime }) => {
   };
 
   return (
-        <div className="my-32 place-content-end">
-          <h1 className="text-6xl font-bold text-white">Welcome,</h1>
-          <p className="text-4xl font-normal text-white my-28">
-            This is where your contacts will live. Click the button below to add
-            a new contact.
-          </p>
-          <Button onClick={handleButtonClick}>add your first contact</Button>
-        </div>
+    <div className=" place-content-center">
+      <h1 className="text-6xl font-bold text-white ">Welcome,</h1>
+      <p className="text-4xl font-normal text-white my-16">
+        This is where your contacts will live. Click the button below to add
+        a new contact.
+      </p>
+      <Button onClick={handleButtonClick}>add your first contact</Button>
+    </div>
   );
 };
 
