@@ -15,11 +15,6 @@ const Contacts: React.FC = () => {
   const navigate = useNavigate();
   const { setContacts } = useContactStore();
 
-  // const { isLoading, isError } = useQuery("me", async () => {
-  //   const response = await axiosInstance.get("/users/me");
-  //   console.log(response.data.id);
-  //   return response.data.id;
-  // });
 
   const { isLoading: isContactsLoading, isError: isContactsError } = useQuery(
     "contacts",

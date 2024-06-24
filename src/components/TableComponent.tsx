@@ -139,7 +139,7 @@ const TableComponent: React.FC = () => {
                         name="name"
                         value={editedContact?.name || ""}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 rounded"
+                        className="w-full border-r-2 border-gray-300  bg-transparent focus:border-green-500 focus:outline-none"
                       />
                     ) : (
                       row.name
@@ -155,6 +155,7 @@ const TableComponent: React.FC = () => {
                             fontSize: "24px",
                             cursor: "pointer",
                             marginLeft: "8px",
+                            color: "083F46",
                           }}
                           onClick={toggleGender}
                         />
@@ -170,7 +171,7 @@ const TableComponent: React.FC = () => {
                         name="email"
                         value={editedContact?.email || ""}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 rounded"
+                        className="w-full border-r-2 border-gray-300  bg-transparent focus:border-green-500 focus:outline-none"
                       />
                     ) : (
                       row.email
@@ -183,7 +184,7 @@ const TableComponent: React.FC = () => {
                         name="phoneNumber"
                         value={editedContact?.phoneNumber || ""}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 rounded"
+                        className="w-full border-r-2 border-gray-300  bg-transparent focus:border-green-500 focus:outline-none"
                       />
                     ) : (
                       row.phoneNumber
@@ -234,4 +235,3 @@ const TableComponent: React.FC = () => {
 };
 
 export default TableComponent;
-
