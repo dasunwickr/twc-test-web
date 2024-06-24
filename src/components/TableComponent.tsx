@@ -56,7 +56,7 @@ const TableComponent: React.FC = () => {
     return response.data;
   }, {
     onSuccess: (data) => {
-      if(data.length === 0) {
+      if (data.length === 0) {
         navigate("/")
       } else {
         setContacts(data);
@@ -218,7 +218,7 @@ const TableComponent: React.FC = () => {
           </table>
         </div>
       </div>
-      
+
       {contactToDelete && (
         <DeleteModal
           contactName={contactToDelete.name}

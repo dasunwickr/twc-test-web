@@ -82,57 +82,68 @@ const NewContacts: React.FC<NewContactsProps> = ({
             onSubmit={handleSubmit(onSubmit)}
             className="my-12 grid grid-cols-2 gap-y-6 gap-x-4"
           >
-            <TextField
-              isPassword={false}
-              {...register("name")}
-              placeholder="Full Name"
-            />
-            <TextField
-              isPassword={false}
-              placeholder="E-mail"
-              {...register("email")}
-            />
-            <TextField
-              isPassword={false}
-              placeholder="Phone Number"
-              {...register("phoneNumber")}
-            />
-            <div className="flex flex-row items-center space-x-4 text-xl">
-              <p className="mr-4 text-white">Gender</p>
-              <label
-                htmlFor="male"
-                className="flex items-center space-x-2 text-white"
-              >
+            <div className="flex flex-col">
+              <TextField
+                isPassword={false}
+                {...register("name")}
+                placeholder="Full Name"
+              />
+              {errors.name && (
+                <p className="text-white">{errors.name.message}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <TextField
+                isPassword={false}
+                placeholder="E-mail"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-white">{errors.email.message}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <TextField
+                isPassword={false}
+                placeholder="Phone Number"
+                {...register("phoneNumber")}
+              />
+              {errors.phoneNumber && (
+                <p className="text-white">{errors.phoneNumber.message}</p>
+              )}
+            </div>
+
+            <div className="flex items-center text-xl text-white mb-4">
+              <p className="mr-4">Gender:</p>
+              <label htmlFor="male" className="inline-flex items-center mr-6">
                 <input
                   type="radio"
                   value="Male"
                   {...register("gender")}
-                  className="bg-primary border-white"
+                  className="bg-primary border-white mr-2 mt-1"
                 />
                 <span>Male</span>
               </label>
-              <label
-                htmlFor="female"
-                className="flex items-center space-x-2 text-white"
-              >
+              <label htmlFor="female" className="inline-flex items-center">
                 <input
                   type="radio"
                   value="Female"
                   {...register("gender")}
-                  className="bg-primary border-white"
+                  className="bg-primary border-white mr-2 mt-1"
                 />
                 <span>Female</span>
               </label>
             </div>
+            {errors.gender && (
+              <p className="text-white">{errors.gender.message}</p>
+            )}
+
             <Button>
-              {firstTime ? "add your first contact" : "add contact"}
+              {firstTime ? "Add Your First Contact" : "Add Contact"}
             </Button>
           </form>
-          <div className="text-white">
-            {Object.values(errors).map((error, index) => (
-              <p key={index}>{error?.message}</p>
-            ))}
-          </div>
         </div>
       </div>
 

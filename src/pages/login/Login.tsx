@@ -98,21 +98,22 @@ const Login: React.FC = () => {
                 <p className="text-white">{errors.password.message}</p>
               )}
 
-              <Button>
-                {loginMutate.isLoading ? "Logging in..." : "Login"}
-              </Button>
-              {loginMutate.isError && (
-                <p className="text-white">Login failed. Please try again.</p>
-              )}
+              <div className="btn-wrapper flex flex-row mt-16">
+                <Button >
+                  {loginMutate.isLoading ? "Logging in..." : "Login"}
+                </Button>
+                <div className="flex flex-row items-center mt-4">
+                  <p className="ml-2 md:ml-3 text-sm md:text-base lg:text-lg text-white">
+                    <span className="mx-1 md:mx-2">or</span>
+                    <a className="underline ml-1 cursor-pointer" onClick={switchToRegister}>
+                      Click here to Register
+                    </a>
+                  </p>
+                </div>
+              </div>
+
             </form>
-          </div>
-          <div className="flex flex-row items-center">
-            <p className="ml-2 md:ml-3 text-sm md:text-base lg:text-lg text-white flex flex-row">
-              <span className="mx-1 md:mx-2">or</span>
-              <button className="underline" onClick={switchToRegister}>
-                Click here to Register
-              </button>
-            </p>
+
           </div>
         </div>
       ) : (

@@ -36,17 +36,17 @@ const Contacts: React.FC = () => {
 
   return (
     <><div className="flex flex-row">
-    <h1 className="text-6xl font-normal italic text-white flex-1 mb-12">
-      Contacts
-    </h1>
-    <div>
-      <Button onClick={() => navigate("/contacts/new")}>
-        Add New Contact
-      </Button>
+      <h1 className="text-6xl font-normal italic text-white flex-1 mb-12">
+        Contacts
+      </h1>
+      <div>
+        <Button onClick={() => navigate("/contacts/new")}>
+          Add New Contact
+        </Button>
+      </div>
     </div>
-  </div>
-  <TableComponent /></>
-      
+      <TableComponent /></>
+
   );
 };
 

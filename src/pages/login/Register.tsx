@@ -52,48 +52,58 @@ const Register: React.FC<RegisterProps> = ({ switchToLogin }) => {
   };
 
   return (
-      <div className="mx-32 flex-1 flex flex-col h-screen py-32 place-content-evenly">
-        <div>
-          <h1 className="font-bold text-5xl text-white">Register Now!</h1>
-        </div>
-        <div className="">
-          <form
-            className="flex flex-col"
-            onSubmit={handleSubmit(handleRegister)}
-          >
-            <TextField
-              placeholder="e-mail"
-              isPassword={false}
-              {...register("email")}
-            />
+    <div className="mx-32 flex-1 flex flex-col h-screen py-32 place-content-evenly">
+      <div>
+        <h1 className="font-bold text-5xl text-white">Register Now!</h1>
+      </div>
+      <div>
+        <form className="" onSubmit={handleSubmit(handleRegister)}>
+
+          <div className="flex flex-col"><TextField
+            placeholder="e-mail"
+            isPassword={false}
+            {...register("email")}
+          />
             {errors.email && (
-              <p className="text-white">{errors.email.message}</p>
+              <p className="text-white bg-red-500 p-2 rounded">
+                {errors.email.message}
+              </p>
             )}
+
             <TextField
               placeholder="create password"
               isPassword={true}
               {...register("createPassword")}
             />
             {errors.createPassword && (
-              <p className="text-white">{errors.createPassword.message}</p>
+              <p className="text-white bg-red-500 p-2 rounded">
+                {errors.createPassword.message}
+              </p>
             )}
+
             <TextField
               placeholder="confirm password"
               isPassword={true}
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
-              <p className="text-white">{errors.confirmPassword.message}</p>
+              <p className="text-white bg-red-500 p-2 rounded">
+                {errors.confirmPassword.message}
+              </p>
             )}
-            <Button>Register</Button>
-          </form>
-        </div>
+          </div>
+
+          <Button>Register</Button>
+        </form>
+      </div>
+      <div className="mt-4">
         <p className="text-xl text-white place-content-end">
           <a className="underline cursor-pointer" onClick={switchToLogin}>
             &lt; Back to Login
           </a>
         </p>
       </div>
+    </div>
   );
 };
 
